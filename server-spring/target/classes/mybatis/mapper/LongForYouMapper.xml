@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LongForYou.server.mapper.LongForYouMapper">
+
+	<select id="getMember" resultType="Member">
+		select * from user where use_id = #{id}
+	</select>
+	
+	<select id="getInformation" resultType="Information">
+		select * from information
+	</select>
+	
+	<select id="getProduct" resultType="Product">
+		select * from product
+	</select>
+	
+	<select id="getImageGroup" resultType="Image">
+		select * from image where ima_groupid=#{num} order by ima_id desc;
+	</select>
+	
+	<select id="getImageThumbnail" resultType="Image">
+		select * from image where ima_thumbnail=true order by ima_id desc
+	</select>
+	
+	<select id="getMessage" resultType="Message">
+		select Mes_id, Mes_content, Mes_date, Mes_hopedate, Mes_name, Mes_phone, Pro_title
+		from message
+		Left join product ON message.Pro_id= product.Pro_id
+		order by mes_id desc LIMIT 20 OFFSET #{num}
+	</select>
+	
+	<select id="getMessageCnt" resultType="String">
+		select count(*) from message
+	</select>
+	
+	<insert id="insertMessage">
+		INSERT INTO message ( Mes_name, Mes_phone, Mes_content, mes_hopedate, pro_id ) VALUES (#{Mes_name}, #{Mes_phone}, #{Mes_content}, #{mes_hopedate}, #{pro_id})
+	</insert>
+	
+	<insert id="insertMessageUn">
+		INSERT INTO message ( Mes_name, Mes_phone, Mes_content, mes_hopedate) VALUES (#{Mes_name}, #{Mes_phone}, #{Mes_content}, #{mes_hopedate})
+	</insert>
+	
+	<update id="updateInformation">
+		update information set inf_content=#{inf_content} where inf_type=#{inf_type}
+	</update>
+	
+	<update id="updateProduct">
+		update product set pro_content=#{pro_content}, pro_title=#{pro_title} where pro_id=#{pro_id}
+	</update>
+	
+	<select id="nextGroupId" resultType="int">
+		select coalesce(MAX(Ima_groupid), 0) + 1 as ima_groupid FROM image
+	</select>
+	
+	<insert id="insertProfiles">
+    	INSERT INTO image (Ima_groupid, Ima_type, Ima_thumbnail, Ima_content)
+    	VALUES (#{Ima_groupid}, #{Ima_type}, #{Ima_thumbnail}, #{Ima_content})
+	</insert>
+	
+	<select id="getFileKeyByGroupId" resultType="S3FileKey">
+		SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(Ima_content, '/', -2), '/', 2) as s3filekey from image where ima_groupid=#{groupId}
+	</select>
+	
+	<delete id="deleteImageGroup">
+		DELETE FROM image WHERE Ima_groupid=#{groupId}
+	</delete>
+	
+</mapper>
