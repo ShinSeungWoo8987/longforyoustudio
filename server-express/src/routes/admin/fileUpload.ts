@@ -3,7 +3,7 @@ import verifyToken from '../auth/verifyToken';
 import dotenv from 'dotenv';
 import connection from '../../database';
 import { upload, s3 } from '../../awsS3';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 dotenv.config({ path: './src/.env' });
 
@@ -18,7 +18,7 @@ router.post('/backgroundVideo', verifyToken, upload('information/background-vide
 router.post(
   '/profile',
   verifyToken,
-  upload(`${uuidv4()}/${uuidv4()}`).single('thumbnail'),
+  upload().single('thumbnail'),
   async (req: Request, res: Response, next: NextFunction) => {
     // 다음 그룹아이디 가져오기
     try {
@@ -34,6 +34,7 @@ router.post(
           const Ima_type = req.body.type;
           const Ima_thumbnail = 1; //true
           const Ima_content = location;
+          console.log(Ima_content);
 
           // db에 저장
           try {
@@ -67,7 +68,7 @@ router.delete('/delete/image/:groupId', verifyToken, async (req: Request, res: R
 
         results1.forEach(
           async ({ s3filekey }: { s3filekey: string }) =>
-            await s3.deleteObject({ Bucket: process.env.BUCKET!, Key: '/' + s3filekey })
+            await s3.deleteObject({ Bucket: process.env.BUCKET!, Key: s3filekey }).promise()
         );
 
         // DB에서 삭제
