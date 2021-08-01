@@ -4,6 +4,7 @@ import { Container, onepxToRem, Title } from '../styles/globals';
 import Head from 'next/head';
 import axios from 'axios';
 import { Product } from '../next-env';
+import media from '../styles/media';
 
 const reservation = () => {
   const [productList, setProductList] = useState<Product[]>([]);
@@ -63,7 +64,7 @@ const reservation = () => {
         <title>LongForYou Studio</title>
       </Head>
 
-      <Container>
+      <Wrapper>
         <Title>예약 문의</Title>
 
         <Content>
@@ -89,12 +90,11 @@ const reservation = () => {
 
         <Content>
           <div>희망 날짜</div>
-          <Input
+          <DateInput
             type="date"
             onChange={(e) => setHopeDate(e.target.value)}
             value={hopeDate}
             min={todayString}
-            style={{ width: `${436 * onepxToRem}rem` }}
             readOnly={hopeDateState}
           />
           <span style={{ marginLeft: `${20 * onepxToRem}rem` }}>
@@ -108,16 +108,31 @@ const reservation = () => {
         </Content>
 
         <Button onClick={onsubmit}>예약</Button>
-      </Container>
+      </Wrapper>
     </>
   );
 };
 
 export default reservation;
 
+const Wrapper = styled(Container)`
+  @media ${media.mobile} {
+    padding-top: 4rem;
+    padding-left: 9rem;
+    padding-right: 9rem;
+  }
+`;
+
 const Content = styled.div`
+  width: 100%;
   margin-bottom: ${16 * onepxToRem}rem;
   line-height: ${(32 + 10) * onepxToRem}rem;
+
+  @media ${media.mobile} {
+    font-size: 16px;
+    margin-bottom: 24px;
+    line-height: 22px;
+  }
 `;
 
 const Input = styled.input`
@@ -128,6 +143,19 @@ const Input = styled.input`
   &:focus {
     outline: none;
     box-shadow: 0px 0px 3px lightgrey;
+  }
+
+  @media ${media.mobile} {
+    font-size: 16px;
+    width: 94%;
+  }
+`;
+
+const DateInput = styled(Input)`
+  width: ${436 * onepxToRem}rem;
+  @media ${media.mobile} {
+    font-size: 16px;
+    width: 76%;
   }
 `;
 
@@ -140,6 +168,11 @@ const TextArea = styled.textarea`
   &:focus {
     outline: none;
     box-shadow: 0px 0px 3px lightgrey;
+  }
+
+  @media ${media.mobile} {
+    font-size: 16px;
+    width: 94%;
   }
 `;
 
@@ -154,6 +187,17 @@ const Button = styled.div`
   text-align: center;
   font-size: ${14 * onepxToRem}rem;
   color: white;
+
+  @media ${media.mobile} {
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+
+    font-weight: 500;
+
+    font-size: 16px;
+    line-height: 32px;
+  }
 `;
 
 const CheckIcon = styled.img`
@@ -171,5 +215,10 @@ const Select = styled.select`
   &:focus {
     outline: none;
     box-shadow: 0px 0px 3px lightgrey;
+  }
+
+  @media ${media.mobile} {
+    font-size: 16px;
+    width: 94%;
   }
 `;

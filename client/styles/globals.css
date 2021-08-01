@@ -5,7 +5,8 @@ html {
 /* 46px = 2.56875rem */
 body {
   margin: 0;
-  padding: 0 9rem 0 9rem;
+  padding: 0;
+  /* padding: 0 9rem 0 9rem; */
 }
 
 a {

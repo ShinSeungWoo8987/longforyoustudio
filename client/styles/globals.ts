@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import media from './media';
 
 // 46px = 2.56875rem
 export const onepxToRem: number = 2.56875 / 46;
@@ -7,12 +8,21 @@ export const Container = styled.div`
   margin: 0;
   padding: 0;
   font-size: ${24 * onepxToRem}rem;
+  min-height: 38rem;
+
+  @media ${media.mobile} {
+    min-height: 90vh;
+  }
 `;
 
 export const Title = styled.div`
   margin-bottom: ${16 * onepxToRem}rem;
   font-size: ${34 * onepxToRem}rem;
   font-weight: bold;
+
+  @media ${media.mobile} {
+    font-size: 22px;
+  }
 `;
 
 export const Box = styled.div<{ height: number }>`
@@ -25,6 +35,13 @@ export const Box = styled.div<{ height: number }>`
   border-radius: ${28 * onepxToRem}rem;
   padding: ${31 * onepxToRem}rem ${27 * onepxToRem}rem;
   font-size: ${20 * onepxToRem}rem;
+
+  @media ${media.mobile} {
+    padding: 31px 27px;
+    min-height: ${({ height }) => `calc(${height / 1.5}px - 40px)`};
+    width: calc(96% - 40px);
+    font-size: 16px;
+  }
 `;
 
 export const MessageLine = styled.div`
@@ -65,6 +82,18 @@ export const BlankImgStyle = {
 
 export const ImgStyle = {
   ...BlankImgStyle,
+  borderRadius: `${14 * onepxToRem}rem`,
+  boxShadow: `0px 0px 99px 0px lightgrey`,
+  cursor: 'pointer',
+};
+
+export const MobileBlankImgStyle = {
+  width: `${233.5 * 1.8 * onepxToRem}rem`,
+  height: `${326.9 * 1.8 * onepxToRem}rem`,
+};
+
+export const MobileImgStyle = {
+  ...MobileBlankImgStyle,
   borderRadius: `${14 * onepxToRem}rem`,
   boxShadow: `0px 0px 99px 0px lightgrey`,
   cursor: 'pointer',

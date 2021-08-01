@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import EditImage from '../components/admin/EditImage';
 import UploadImage from '../components/admin/UploadImage';
 import EditMainImage from '../components/admin/EditMainImage';
+import media from '../styles/media';
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const images = await axios
@@ -104,7 +105,7 @@ const admin: React.FC<adminProps> = (props) => {
         <title>LongForYou Studio - 관리자</title>
       </Head>
 
-      <Container>
+      <Wrapper>
         {!loading && isLogin && (
           <>
             <Header>
@@ -114,38 +115,28 @@ const admin: React.FC<adminProps> = (props) => {
 
             <Hr />
 
-            <Container>
-              <Message />
-            </Container>
+            <Message />
 
             <Hr />
 
-            <Container>
-              <EditContent
-                images={images}
-                information={information}
-                updateImage={updateImage}
-                updateInformation={updateInformation}
-              />
-            </Container>
+            <EditContent
+              images={images}
+              information={information}
+              updateImage={updateImage}
+              updateInformation={updateInformation}
+            />
 
             <Hr />
 
-            <Container>
-              <UploadImage />
-            </Container>
+            <UploadImage />
 
             <Hr />
 
-            <Container>
-              <EditImage />
-            </Container>
+            <EditImage />
 
             <Hr />
 
-            <Container>
-              <EditMainImage />
-            </Container>
+            <EditMainImage />
 
             {/* <Hr />
             미리보기 :{' '}
@@ -155,12 +146,20 @@ const admin: React.FC<adminProps> = (props) => {
             {allPagesOpen && [<Hr />, allPages]} */}
           </>
         )}
-      </Container>
+      </Wrapper>
     </>
   );
 };
 
 export default admin;
+
+const Wrapper = styled(Container)`
+  @media ${media.mobile} {
+    padding-left: 9rem;
+    padding-right: 9rem;
+    /* font-size: 16px; */
+  }
+`;
 
 const Header = styled.div`
   display: flex;

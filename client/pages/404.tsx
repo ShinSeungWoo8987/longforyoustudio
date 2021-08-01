@@ -2,6 +2,7 @@ import Head from 'next/head';
 import React from 'react';
 import styled from 'styled-components';
 import { Container } from '../styles/globals';
+import media from '../styles/media';
 
 const Error404 = () => {
   return (
@@ -18,8 +19,14 @@ const Error404 = () => {
 
 export default Error404;
 
-export const Wrapper = styled(Container)`
+const Wrapper = styled(Container)`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media ${media.mobile} {
+    padding-left: 9rem;
+    padding-right: 9rem;
+    font-size: 16px;
+  }
 `;

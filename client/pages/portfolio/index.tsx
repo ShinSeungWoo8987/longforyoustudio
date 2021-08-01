@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { BlankImgStyle, ImgStyle, onepxToRem } from '../../styles/globals';
+import {
+  BlankImgStyle,
+  Container,
+  ImgStyle,
+  onepxToRem,
+  MobileBlankImgStyle,
+  MobileImgStyle,
+} from '../../styles/globals';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import axios from 'axios';
 import { Image } from '../../next-env';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import media, { size } from '../../styles/media';
 
 const chunk = (arr: Image[], size: number) => {
   let i, j;
@@ -21,6 +29,16 @@ const chunk = (arr: Image[], size: number) => {
 const index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<null | string>(null);
   const [images, setImages] = useState([]);
+  /////////////
+  const [splitNum, setSplitNum] = useState(6);
+  const handleResize = () => {
+    if (window.innerWidth < size.mobile) {
+      setSplitNum(3);
+    } else {
+      setSplitNum(6);
+    }
+  };
+
   useEffect(() => {
     axios
       .get(process.env.NEXT_PUBLIC_API_URL + `/image/all`)
@@ -28,15 +46,21 @@ const index: React.FC = () => {
       .catch((err) => {
         console.log(`이미지데이터 불러오기 실패`);
       });
+    /////////////
+    handleResize(); // 첫번째 렌더링에서 화면크기를 가져오기위해 한번 실행시켜준다.
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const thumbnails = images ? images.filter((img) => img.Ima_thumbnail === true || img.Ima_thumbnail === 1) : [];
-  const imageList: Image[][] = chunk(thumbnails, 6);
+  const imageList: Image[][] = chunk(thumbnails, splitNum);
 
   const blankSpan = (n: number) => {
     let arr = [];
     for (let i = 0; i < n; i++) {
-      arr.push(<div style={BlankImgStyle} />);
+      arr.push(<div style={splitNum === 3 ? MobileBlankImgStyle : BlankImgStyle} />);
     }
 
     return arr;
@@ -56,7 +80,7 @@ const index: React.FC = () => {
         </Modal>
       )}
 
-      <Container>
+      <Wrapper>
         {imageList.map((arr, idx) => (
           <div key={idx}>
             {idx !== 0 && <Margin />}
@@ -68,23 +92,28 @@ const index: React.FC = () => {
                     src={image.Ima_content}
                     alt={`${image.Ima_id}`}
                     effect="opacity"
-                    style={ImgStyle}
+                    style={splitNum === 3 ? MobileImgStyle : ImgStyle}
                   />
                 </span>
               ))}
-              {blankSpan(6 - arr.length)}
+              {blankSpan(splitNum - arr.length)}
             </ImgList>
           </div>
         ))}
-      </Container>
+      </Wrapper>
     </>
   );
 };
 
 export default index;
 
-const Container = styled.div`
-  width: 100%;
+const Wrapper = styled(Container)`
+  @media ${media.mobile} {
+    padding-top: 4rem;
+    padding-left: 9rem;
+    padding-right: 9rem;
+    font-size: 16px;
+  }
 `;
 
 const ImgList = styled.div`

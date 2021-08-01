@@ -25,6 +25,7 @@ router.post('/login', (req, res, next) => __awaiter(void 0, void 0, void 0, func
             if (error)
                 throw error;
             const validPassword = yield bcryptjs_1.default.compare(req.body.password, results[0].Use_pw);
+            console.log(validPassword);
             if (!validPassword)
                 throw error;
             else {

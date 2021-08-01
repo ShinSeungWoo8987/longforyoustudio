@@ -2,6 +2,7 @@ import React from 'react';
 import parse from 'react-html-parser';
 import styled from 'styled-components';
 import { onepxToRem } from '../styles/globals';
+import media from '../styles/media';
 
 const Footer = () => {
   const footer =
@@ -19,4 +20,12 @@ export default Footer;
 const Container = styled.div`
   padding: ${46 * onepxToRem}rem 0;
   border-top: 3px solid #eeeef0;
+
+  @media ${media.mobile} {
+    border-top: 2px solid #eeeef0;
+    height: 54px;
+
+    text-align: center;
+    font-size: 16px;
+  }
 `;

@@ -17,7 +17,6 @@ const verifyToken_1 = __importDefault(require("../auth/verifyToken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = __importDefault(require("../../database"));
 const awsS3_1 = require("../../awsS3");
-const uuid_1 = require("uuid");
 dotenv_1.default.config({ path: './src/.env' });
 const router = express_1.default.Router();
 router.post('/backgroundVideo', verifyToken_1.default, awsS3_1.upload('information/background-video.mp4').single('video'), (req, res) => {
@@ -25,7 +24,7 @@ router.post('/backgroundVideo', verifyToken_1.default, awsS3_1.upload('informati
     res.sendStatus(200);
 });
 // 원래 형태는 썸네일+묶음파일로 한 그룹씩 있었는데, 그냥 묶지말고 하나씩만 해달라는 요청으로 썸네일로만 남김.
-router.post('/profile', verifyToken_1.default, awsS3_1.upload(`${uuid_1.v4()}/${uuid_1.v4()}`).single('thumbnail'), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/profile', verifyToken_1.default, awsS3_1.upload().single('thumbnail'), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // 다음 그룹아이디 가져오기
     try {
         yield database_1.default.query(`select coalesce(MAX(Ima_groupid), 0) + 1 as ima_groupid FROM image`, (err1, results1, fields) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,6 +36,7 @@ router.post('/profile', verifyToken_1.default, awsS3_1.upload(`${uuid_1.v4()}/${
             const Ima_type = req.body.type;
             const Ima_thumbnail = 1; //true
             const Ima_content = location;
+            console.log(Ima_content);
             // db에 저장
             try {
                 yield database_1.default.query(`INSERT INTO image (Ima_groupid, Ima_type, Ima_thumbnail, Ima_content) VALUES (?, ?, ?, ?)`, [Ima_groupid, Ima_type, Ima_thumbnail, Ima_content], (err2, results2, fields) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +61,7 @@ router.delete('/delete/image/:groupId', verifyToken_1.default, (req, res, next) 
         yield database_1.default.query(`SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(Ima_content, '/', -2), '/', 2) as s3filekey from image where ima_groupid=?`, [Number(req.params.groupId)], (err1, results1, fields) => __awaiter(void 0, void 0, void 0, function* () {
             if (err1)
                 throw err1;
-            results1.forEach(({ s3filekey }) => __awaiter(void 0, void 0, void 0, function* () { return yield awsS3_1.s3.deleteObject({ Bucket: process.env.BUCKET, Key: '/' + s3filekey }); }));
+            results1.forEach(({ s3filekey }) => __awaiter(void 0, void 0, void 0, function* () { return yield awsS3_1.s3.deleteObject({ Bucket: process.env.BUCKET, Key: s3filekey }).promise(); }));
             // DB에서 삭제
             try {
                 yield database_1.default.query(`DELETE FROM image WHERE Ima_groupid=?`, [Number(req.params.groupId)], (err3, results2, fields) => __awaiter(void 0, void 0, void 0, function* () {

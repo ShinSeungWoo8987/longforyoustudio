@@ -14,6 +14,8 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
       if (error) throw error;
 
       const validPassword = await bcrypt.compare(req.body.password, results[0].Use_pw);
+
+      console.log(validPassword);
       if (!validPassword) throw error;
       else {
         // 토큰 발급

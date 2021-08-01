@@ -7,6 +7,7 @@ import ProductBox from '../components/ProductBox';
 import parse from 'react-html-parser';
 import axios from 'axios';
 import { Information, NoticeProps } from '../next-env';
+import media from '../styles/media';
 
 const notice: React.FC<NoticeProps> = (props) => {
   const [procedure1, setProcedure1] = useState(props.procedure1 ? props.procedure1 : '');
@@ -66,7 +67,7 @@ const notice: React.FC<NoticeProps> = (props) => {
         <title>LongForYou Studio</title>
       </Head>
 
-      <Container>
+      <Wrapper>
         <Title>촬영절차</Title>
         <Content marginBottom={true}>
           <Box height={250}>
@@ -96,39 +97,72 @@ const notice: React.FC<NoticeProps> = (props) => {
         <Content marginBottom={true}>{parse(request)}</Content>
 
         <Title>상품</Title>
-        <Content marginBottom={false}>
+        <ProductList marginBottom={false}>
           {productList &&
             productList.map((prod) => {
               if (prod.pro_id === 0) return null;
               else return <ProductBox key={prod.pro_id} title={prod.pro_title} content={prod.pro_content} />;
             })}
-        </Content>
+        </ProductList>
 
         <div style={{ marginBottom: `${46 * onepxToRem}rem` }}>{parse(product)}</div>
 
         <Link href="/reservation">
           <E>예약 문의하기</E>
         </Link>
-      </Container>
+      </Wrapper>
     </>
   );
 };
 
 export default notice;
 
+const Wrapper = styled(Container)`
+  @media ${media.mobile} {
+    padding-top: 4rem;
+    padding-left: 9rem;
+    padding-right: 9rem;
+    font-size: 16px;
+  }
+`;
+
 const Content = styled.div<{ marginBottom: boolean }>`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
   margin-bottom: ${({ marginBottom }) => (marginBottom ? `${46 * onepxToRem}rem` : `${16 * onepxToRem}rem`)};
 
   line-height: ${42 * onepxToRem}rem;
+
+  @media ${media.mobile} {
+    flex-direction: column;
+    align-items: flex-start;
+
+    margin-bottom: ${({ marginBottom }) => (marginBottom ? `${46}px` : `${16}px`)};
+    line-height: 22px;
+  }
+`;
+
+const ProductList = styled(Content)`
+  @media ${media.mobile} {
+    height: ${540 + 72}px;
+  }
 `;
 
 const Arrow = styled.img`
   width: ${40 * onepxToRem}rem;
   height: ${35 * onepxToRem}rem;
+  @media ${media.mobile} {
+    width: ${40 / 3}px;
+    height: ${35 / 3}px;
+
+    transform: rotate(90deg);
+
+    padding: 12px;
+    align-self: center;
+  }
 `;
 
 const E = styled.span`
@@ -141,12 +175,22 @@ const BulbIcon = styled.img`
   display: block;
   height: ${40 * onepxToRem}rem;
   width: ${27.54 * onepxToRem}rem;
+
+  @media ${media.mobile} {
+    height: ${40 / 2}px;
+    width: ${27.54 / 2}px;
+  }
 `;
 
 const ChatIcon = styled.img`
   display: block;
   height: ${40 * onepxToRem}rem;
   width: ${40.77 * onepxToRem}rem;
+
+  @media ${media.mobile} {
+    height: ${40 / 2}px;
+    width: ${40.77 / 2}px;
+  }
 `;
 
 const CameraIcon = styled.img`
@@ -154,6 +198,12 @@ const CameraIcon = styled.img`
   height: ${32 * onepxToRem}rem;
   width: ${41 * onepxToRem}rem;
   padding: ${4 * onepxToRem}rem 0;
+
+  @media ${media.mobile} {
+    height: ${32 / 2}px;
+    width: ${41 / 2}px;
+    padding: ${4 / 2}px 0;
+  }
 `;
 
 const CheckIcon = styled.img`
@@ -171,9 +221,4 @@ const Description = styled.div`
 const ProductTitle = styled.div`
   font-size: ${24 * onepxToRem}rem;
   font-weight: bold;
-`;
-
-const ProductContent = styled.div`
-  line-height: normal;
-  line-height: ${30 * onepxToRem}rem;
 `;

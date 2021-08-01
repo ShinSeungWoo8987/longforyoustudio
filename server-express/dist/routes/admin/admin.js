@@ -17,10 +17,12 @@ const verifyToken_1 = __importDefault(require("../auth/verifyToken"));
 const database_1 = __importDefault(require("../../database"));
 const router = express_1.default.Router();
 router.get('/message/:num', verifyToken_1.default, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (isNaN(Number(req.params.num)))
+    let offset = Number(req.params.num);
+    if (isNaN(offset))
         return res.sendStatus(400);
+    offset = (offset - 1) * 20;
     try {
-        yield database_1.default.query(`select Mes_id, Mes_content, Mes_date, mes_hopedate, Mes_name, Mes_phone, pro_title from message Left join product ON message.pro_id= product.pro_id order by mes_id desc LIMIT 20 OFFSET ?`, [Number(req.params.num)], (error, results, fields) => __awaiter(void 0, void 0, void 0, function* () {
+        yield database_1.default.query(`select Mes_id, Mes_content, Mes_date, mes_hopedate, Mes_name, Mes_phone, pro_title from message Left join product ON message.pro_id= product.pro_id order by mes_id desc LIMIT 20 OFFSET ?`, [offset], (error, results, fields) => __awaiter(void 0, void 0, void 0, function* () {
             if (error)
                 throw error;
             res.json(results);
