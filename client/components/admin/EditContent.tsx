@@ -15,12 +15,13 @@ interface EditContentProps {
 const EditContent: React.FC<EditContentProps> = ({ images, information, updateImage, updateInformation }) => {
   const [titleSelected, setTitleSelected] = useState('procedure');
   const [procedureSelected, setProcedureSelected] = useState('procedure1');
-  const [selectedProductId, setSelectedProductId] = useState(0);
+  const [selectedProductId, setSelectedProductId] = useState(1);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [display, setDisplay] = useState(false);
   useEffect(() => {
+    console.log(titleSelected);
     if (titleSelected === 'procedure') {
       setContent(information[procedureSelected]);
     } else if (titleSelected === 'productList') {
@@ -97,7 +98,6 @@ const EditContent: React.FC<EditContentProps> = ({ images, information, updateIm
           <select onChange={handleTitleChange}>
             <option value="procedure">촬영절차</option>
             <option value="request">문의</option>
-            <option value="product">상품</option>
             <option value="productList">상품목록 수정</option>
           </select>
 
